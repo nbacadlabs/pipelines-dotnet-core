@@ -1,7 +1,10 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+#Asp.net core example 
+parameters:
+- name: succeed
+  displayName: Succeed or fail
+  type: boolean
+  default: false
+
 trigger:
 - master
 
@@ -11,7 +14,30 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
-steps:
-- script: |
-    echo -e $APPINSTALL dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+jobs:
+- job: Work
+  steps:
+  - script: |
+      echo Hello, wold!
+    displayName: 'Run a one-line script'
+
+-job: ErrorHandler
+  dependsOn: Work
+  condition: failed()
+  steps:
+  - bash: |
+      az boards work-item create \
+        --title "Build $(build.buildNumber) failed" \
+        --type bud \
+        --org $(System.TeamFoundationCollectionUri) \
+        --project $(System.TeamProject)
+    env:
+      AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
+    displayName: 'Create work item on failure'
+
+
+- job: InstallApp.Net
+  steps:
+  - script: |
+      echo -e $APPINSTALL dotnet build --configuration $(buildConfiguration)
+    displayName: 'dotnet build $(buildConfiguration)'
