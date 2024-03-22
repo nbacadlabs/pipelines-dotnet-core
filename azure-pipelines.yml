@@ -36,7 +36,7 @@ jobs:
     displayName: 'Create work item on failure'
 
 
-- job: InstallApp.Net
+- job: InstallApp_Net
   steps:
   - script: |
       echo -e $APPINSTALL dotnet build --configuration $(buildConfiguration)
