@@ -14,5 +14,5 @@ variables:
 
 steps:
 - script: |
-    echo -e $APPINSTALL | sudo dotnet build --configuration $(buildConfiguration)
+    echo -e $APPINSTALL | sudo -S dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
